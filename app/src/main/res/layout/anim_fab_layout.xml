@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<!-- Your FAB implementation -->
+<com.wonders.zhaohupingguapp.views.Fab
+    android:id="@+id/fab"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    style="@style/Widget.MaterialSheetFab.Fab"
+    android:layout_marginRight="16dp"
+    app:backgroundTint="@color/colorPrimary"
+    android:layout_marginBottom="80dp"
+    />
+
+<!-- Overlay that dims the screen -->
+<com.gordonwong.materialsheetfab.DimOverlayFrameLayout
+    android:id="@+id/overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+<!-- Circular reveal container for the sheet -->
+<io.codetail.widget.RevealLinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="end|bottom"
+    android:orientation="vertical">
+
+    <!-- Sheet that contains your items -->
+    <android.support.v7.widget.CardView
+        android:id="@+id/fab_sheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="30dp"
+        >
+
+        <!-- TODO: Put your sheet items here -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/btn_camera"
+                android:text="拍照"
+                android:gravity="center_vertical"
+                android:background="@color/lightGray"
+                android:textColor="#075bf8"
+                android:drawablePadding="10dp"
+                android:paddingLeft="20dp"
+                android:layout_width="200dp"
+                android:layout_height="60dp" />
+
+            <TextView
+                android:id="@+id/btn_record"
+                android:text="录像"
+                android:gravity="center_vertical"
+                android:background="@color/lightGray"
+                android:textColor="#d4237a"
+                android:drawablePadding="10dp"
+                android:paddingLeft="20dp"
+                android:layout_width="200dp"
+                android:layout_height="60dp" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</io.codetail.widget.RevealLinearLayout>
+</RelativeLayout>

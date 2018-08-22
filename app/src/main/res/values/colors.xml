@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="username0">#e21400</color>
+    <color name="username1">#91580f</color>
+    <color name="username2">#f8a700</color>
+    <color name="username3">#f78b00</color>
+    <color name="username4">#58dc00</color>
+    <color name="username5">#287b00</color>
+    <color name="username6">#a8f07a</color>
+    <color name="username7">#4ae8c4</color>
+    <color name="username8">#3b88eb</color>
+    <color name="username9">#3824aa</color>
+    <color name="username10">#a700ff</color>
+    <color name="username11">#d300e7</color>
+
+    <color name="guillotine_background">#444153</color>
+    <color name="guillotine_background_dark">#383547</color>
+    <color name="selected_item_color">#30d1d5</color>
+    <color name="tea_mouse">#63434f</color>
+
+    <color name="golden_red">#f47920</color>
+    <color name="fly_red">#ef4136</color>
+    <color name="graywhite">#d9d6c3</color>
+    <color name="lightgreen">#4CAF50</color>
+    <color name="lightbambol">#65c294</color>
+    <color name="bluechina">#73b9a2</color>
+    <color name="greenchina">#00aebf</color>
+    <color name="bluebambol">#72baa7</color>
+    <color name="black">#000000</color>
+    <color name="willowgreen">#78a355</color>
+    <color name="gray">#77787b</color>
+    <color name="dast">#ba8448</color>
+    <color name="human">#ba8448</color>
+    <color name="stone_bambol">#d1c7b7</color>
+
+    <color name="saffron">#F4B63E</color>
+    <color name="sienna">#EB6460</color>
+    <color name="green">#10b4a5</color>
+    <color name="blue_green">#00ae9d</color>
+    <color name="green_dark">#0797a9</color>
+    <color name="purple">#7c57e4</color>
+    <color name="pink">#ff4284</color>
+    <color name="orange">#ff8c6a</color>
+
+    <color name="brand">#ffbf080B</color>
+    <color name="material_red">#FF4500</color>
+    <color name="material_red_dark">#CD3333</color>
+    <color name="brand_fill">#80bf080B</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="darkgrey"> #C0C0C0</color>
+    <color name="grey"> #ebebeb</color>
+    <color name="gary">#898989</color>
+    <color name="white">#fffffb</color>
+    <color name="like_green">#7fb80e</color>
+    <color name="new_brigh">#50b7c1</color>
+    <color name="ink">#464547</color>
+    <color name="dark_gray">#999d9c</color>
+
+    <color name="text_black_87">#de000000</color>
+    <color name="text_white_87">#deFFFFFF</color>
+    <color name="theme_accent">#FFEB3B</color>
+    <color name="blue">#009ad6</color>
+    <color name="light_orange">#fcaf17</color>
+
+    <color name="theme_yellow_background">#ffff8d</color>
+    <color name="theme_yellow_primary">#ff8800</color>
+    <color name="theme_yellow_accent">#19dcff</color>
+    <color name="theme_yellow_primary_dark">#EF6C00</color>
+    <color name="light_green">#00ae9d</color>
+
+
+    <color name="light_blue">#5c97e7</color>
+    <color name="light_black">#333333</color>
+
+    <color name="base_color">#3586C1</color>
+
+    <color name="message_bg">#E4D68B</color>
+
+    <color name="message_font">#BE2020</color>
+
+    <color name="font_black">#191919</color>
+
+    <color name="font_dark_gray">#535353</color>
+
+    <color name="child_page_bg">#F4F4F4</color>
+    <color name="record_sky_blue">#F6FBFD</color>
+
+    <color name="blue_color">#0291FD</color>
+
+    <color name="sea_blue">#1945AC</color>
+
+    <color name="lightGray">#ebf3ff</color>
+    <color name="hintText">#83a1cd</color>
+    <color name="login_blue">#3688ff</color>
+</resources>

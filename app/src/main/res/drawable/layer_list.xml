@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#0ac39e">   <!--最底层的颜色，用于被遮盖-->
+            </solid>
+        </shape>
+
+    </item>
+
+
+    <item android:bottom="6dp">
+        <shape android:shape="rectangle">
+
+            <solid android:color="#ffffff"></solid>  <!--白色遮盖下面底色，形成一条线-->
+        </shape>
+
+    </item>
+
+    <item android:bottom="1dp"
+        android:left="1dp"
+        android:right="1dp"
+
+        >
+
+        <shape  android:shape="rectangle">
+
+            <solid android:color="#ffffff"></solid> <!--最后一层还是白色，压盖成线-->
+
+        </shape>
+
+    </item>
+
+
+</layer-list>
