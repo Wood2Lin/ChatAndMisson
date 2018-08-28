@@ -52,4 +52,8 @@
         <item name="android:windowEnterAnimation">@anim/bottom_pop_in</item>
         <item name="android:windowExitAnimation">@anim/bottom_pop_out</item>
     </style>
+
+    <style name="request_item_text_style">
+        <item name="android:padding">10dp</item>
+    </style>
 </resources>

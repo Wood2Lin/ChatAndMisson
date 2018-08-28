@@ -1,13 +1,19 @@
 package com.coreimagine.chatandmisson.utils;
 
+import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.coreimagine.chatandmisson.App;
+import com.coreimagine.chatandmisson.beans.TaskBean;
 import com.vondear.rxtool.view.RxToast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import io.socket.emitter.Emitter;
 
 public class TaskMessageUtils {
 
@@ -17,9 +23,26 @@ public class TaskMessageUtils {
     public static void performanceCommon(String msg) {
         String id = "", num = "", type = "", num2 = "", event_name = "performanceOne";
         String[] commands = msg.split("/");
-        if (commands.length<2||commands.length>3){
-            RxToast.error("输入格式不对");
-            return;
+        if (commands.length!=3){
+            Log.e("performanceCommon: ", msg);
+            if (commands[0].equals("离开")){
+                type = commands[0];
+                num = commands[1];
+                event_name = "applyLeave";
+            }else if (commands[0].equals("回归")){
+                type = commands[0];
+                num = commands[1];
+                event_name = "applyBack";
+            }else if (commands[0].equals("查")){
+                type = commands[0];
+                event_name = "query";
+            }else if (commands[0].equals("取消")){
+                type = commands[0];
+                event_name = "cancel";
+            }else {
+                RxToast.error("输入格式不对");
+                return;
+            }
         }
         if (commands.length == 3) {
             if (TextUtils.isDigitsOnly(commands[0])) {
@@ -34,12 +57,26 @@ public class TaskMessageUtils {
                     num = commands[2];
                 }
             } else {
-                type = commands[0];
-                num = commands[1];
-                num2 = commands[2];
-                event_name = "performanceTwo";
+                if (commands[0].equals("总")){
+                    if (TextUtils.isDigitsOnly(commands[1])){
+                        type = commands[0];
+                        num = commands[1];
+                        num2 = commands[2];
+                        event_name = "performanceFive";
+                    }else {
+                        type = commands[0];
+                        num = commands[1];
+                        num2 = commands[2];
+                        event_name = "performanceFour";
+                    }
+                }else {
+                    type = commands[0];
+                    num = commands[1];
+                    num2 = commands[2];
+                    event_name = "performanceTwo";
+                }
             }
-
+        }
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");// HH:mm:ss
             Date date = new Date(System.currentTimeMillis());
             JSONObject jsonObject = new JSONObject();
@@ -54,9 +91,9 @@ public class TaskMessageUtils {
             jsonObject.put("value2", num2);
             jsonObject.put("time", simpleDateFormat.format(date));
             String timeStr = simpleDateFormat.format(date).trim().replace(" ","");
-            jsonObject.put("taskID", App.getUserInfo().getId() + "_" +timeStr);
+            jsonObject.put("taskID", System.currentTimeMillis());
+            Log.e( "performanceCommon: ", jsonObject.toString());
             App.getSocket().emit(event_name, jsonObject.toString());
-        }
     }
 
     /**
@@ -132,21 +169,15 @@ public class TaskMessageUtils {
  /**
      * 申请回归
      */
-    public static void applyBack(String minute){
+    public static void handleRequest(TaskBean taskBean,int result){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");// HH:mm:ss
         Date date = new Date(System.currentTimeMillis());
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("userID",App.getUserInfo().getId());
-        jsonObject.put("type","0x02");
-        jsonObject.put("Num","");
-        jsonObject.put("flag","0");
-        jsonObject.put("value1",minute);
-        jsonObject.put("value2","");
+        jsonObject.put("adminID",App.getUserInfo().getId());
+        jsonObject.put("adminName",App.getUserInfo().getName());
+        jsonObject.put("task", JSON.toJSON(taskBean).toString());
+        jsonObject.put("result", result);
         jsonObject.put("time",simpleDateFormat.format(date));
-        jsonObject.put("taskID",App.getUserInfo().getId()+"_"+simpleDateFormat.format(date));
-        App.getSocket().emit("applyBack", jsonObject.toString());
+        App.getSocket().emit(App.groupName+"handleRequest", jsonObject.toString());
     }
-
-
-
 }
