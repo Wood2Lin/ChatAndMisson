@@ -5,20 +5,32 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.coreimagine.chatandmisson.activities.MainActivity;
 import com.coreimagine.chatandmisson.beans.MessageBean;
+import com.coreimagine.chatandmisson.beans.RequestBean;
 import com.coreimagine.chatandmisson.beans.TaskBean;
 
 import org.xutils.ex.DbException;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -28,9 +40,17 @@ import static com.coreimagine.chatandmisson.App.getUserInfo;
 
 public class SocketService extends Service {
     private Socket mSocket;
-//    private Callback callback;
+    //    private Callback callback;
     private boolean isConnected;
     private int notificationId=0;
+    private Uri uri;
+    private Ringtone rt;
+    private Timer timer;
+    private TimerTask timerTask;
+    private StopReceiverReceiver stopReceiverReceiver;
+    private Thread thread;
+    private boolean isInterrupt;
+
     public SocketService() {
     }
 
@@ -48,17 +68,24 @@ public class SocketService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         initSocket();
-        return START_NOT_STICKY;
+        uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        rt = RingtoneManager.getRingtone(getApplicationContext(), uri);
+        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(stopReceiverReceiver);
 //        mSocket.disconnect();
 //        startService(new Intent(this,SocketService.class));
     }
     void initSocket(){
-        Log.e("initSocket: ", "初始化连接");
+        soundThread();
+        stopReceiverReceiver = new StopReceiverReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("STOP_NOTIFY_ACTION");   //为BroadcastReceiver指定action，使之用于接收同action的广播
+        registerReceiver(stopReceiverReceiver,intentFilter);
         mSocket = App.getSocket();
         mSocket.on(Socket.EVENT_CONNECT,onConnect);
         mSocket.on(Socket.EVENT_DISCONNECT,onDisconnect);
@@ -67,10 +94,7 @@ public class SocketService extends Service {
         mSocket.on(App.groupName, onNewMessage);
         mSocket.on(App.groupName+"handleRequest", handledRequest);
         mSocket.on(App.groupName+"query", query);
-//        mSocket.on("user joined", onUserJoined);
-//        mSocket.on("user out", onUserLeft);
-//        mSocket.on("typing", onTyping);
-//        mSocket.on("stop typing", onStopTyping);
+        mSocket.on("SystemBroadcast", SystemBroadcast);
         mSocket.disconnect();
         mSocket.connect();
 
@@ -80,7 +104,7 @@ public class SocketService extends Service {
         @Override
         public void call(final Object... args) {
             JSONObject jsonObject = JSON.parseObject(args[0].toString());
-            Log.e("call: ", jsonObject.toString());
+            isInterrupt = false;
             TaskBean taskBean = JSON.toJavaObject(jsonObject,TaskBean.class);
 //            boolean isSaved = isSaveMsg(taskBean);
             Intent counterIntent = new Intent();
@@ -92,16 +116,18 @@ public class SocketService extends Service {
             if (getUserInfo().getUsertype()==1) {
                 if (taskBean.getType().equals("离开") || taskBean.getType().equals("回归")) {
                     sendNotification("申请人:" + taskBean.getUserName(), "申请内容:" + taskBean.getType() + taskBean.getValue1() + "分钟");
+                    if (!isInterrupt) thread.start();
                 }
             }
         }
     };
-
+    /**
+     * 处理请求
+     */
     private Emitter.Listener handledRequest = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            JSONObject jsonObject = JSON.parseObject(args[0].toString());
-            Log.e("call: ", jsonObject.toString());
+            Log.e("callreq: ", args[0].toString());
             Intent counterIntent = new Intent();
             counterIntent.putExtra("data", args[0].toString());
             counterIntent.putExtra("event", App.groupName+"handleRequest");
@@ -110,7 +136,25 @@ public class SocketService extends Service {
             sendBroadcast(counterIntent);
         }
     };
-private Emitter.Listener query = new Emitter.Listener() {
+    /**
+     * 查询
+     */
+    private Emitter.Listener query = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            JSONObject jsonObject = JSON.parseObject(args[0].toString());
+            Intent counterIntent = new Intent();
+            counterIntent.putExtra("data", args[0].toString());
+            counterIntent.putExtra("event", App.groupName+"query");
+            counterIntent.putExtra("type", 2);
+            counterIntent.setAction("MESSAGE_ACTION");
+            sendBroadcast(counterIntent);
+        }
+    };
+    /**
+     * 系统广播
+     */
+    private Emitter.Listener SystemBroadcast = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             JSONObject jsonObject = JSON.parseObject(args[0].toString());
@@ -189,8 +233,6 @@ private Emitter.Listener query = new Emitter.Listener() {
         /**
          *  实例化通知栏构造器
          */
-
-//ChannelId为"1",ChannelName为"Channel1"
         if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("1",
                     "Channel1", NotificationManager.IMPORTANCE_DEFAULT);
@@ -221,5 +263,35 @@ private Emitter.Listener query = new Emitter.Listener() {
         //发送通知请求
         notificationManager.notify(notificationId, mBuilder.build());
         notificationId++;
+    }
+
+    private void play(){
+        if (!rt.isPlaying()) rt.play();
+    }
+
+    class StopReceiverReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+//            thread.interrupt();
+            thread.interrupt();
+            isInterrupt = true;
+        }
+    }
+
+    private void soundThread(){
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!isInterrupt) {
+                    play();
+                    try {
+                        thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }

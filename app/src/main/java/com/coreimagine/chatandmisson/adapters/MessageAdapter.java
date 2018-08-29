@@ -2,6 +2,7 @@ package com.coreimagine.chatandmisson.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -60,11 +61,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 viewHolder = new ViewHolderRequest(v);
                 break;
             case Message.TYPE_ACTION:
-                layout = R.layout.item_request;
+                layout = R.layout.item_action;
                 v = LayoutInflater
                         .from(parent.getContext())
                         .inflate(layout, parent, false);
-                viewHolder = new ViewHolderRequest(v);
+                viewHolder = new ViewHolder(v);
                 break;
         }
 
@@ -75,7 +76,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         final Message message = mMessages.get(position);
-        Log.e("onBindViewHolder: ", message.getType()+"---");
         if (message.getType() != Message.TYPE_Request) {
             viewHolder.setMessage(message.getMessage());
             viewHolder.setUsername(message.getUsername());
@@ -102,6 +102,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     viewHolderRequest.allow.setText("已允许");
                     viewHolderRequest.allow.setEnabled(false);
                     viewHolderRequest.deny.setVisibility(View.GONE);
+                    stopNotify();
                 }
             });
 
@@ -112,6 +113,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     viewHolderRequest.deny.setText("已拒绝");
                     viewHolderRequest.deny.setEnabled(false);
                     viewHolderRequest.allow.setVisibility(View.GONE);
+                    stopNotify();
                 }
             });
         }
@@ -164,5 +166,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             allow = itemView.findViewById(R.id.allow);
             deny = itemView.findViewById(R.id.deny);
         }
+    }
+
+    private void stopNotify(){
+        Intent counterIntent = new Intent();
+        counterIntent.setAction("STOP_NOTIFY_ACTION");
+        context.sendBroadcast(counterIntent);
     }
 }

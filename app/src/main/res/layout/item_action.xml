@@ -1,28 +1,35 @@
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingTop="@dimen/spacing">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginLeft="40dp"
+    android:layout_marginRight="40dp"
+    android:gravity="center_horizontal"
+    android:background="@color/white"
+    android:padding="@dimen/spacing">
 
     <TextView
-            android:id="@+id/username"
-            style="?android:textAppearanceMedium"
-            android:textColor="?android:textColorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textStyle="bold"/>
+        android:id="@+id/username"
+        style="?android:textAppearanceMedium"
+        android:textColor="?android:textColorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="业绩"
+        android:textStyle="bold"/>
     <TextView
-            android:id="@+id/action"
-            style="?android:textAppearanceMedium"
-            android:textColor="?android:textColorSecondary"
-            android:text="正在输入"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing"
-            android:paddingRight="@dimen/spacing"
-            android:singleLine="true"/>
+        android:id="@+id/message"
+        style="?android:textAppearanceMedium"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/red"
+        android:text="正在输入"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing"
+        android:paddingRight="@dimen/spacing"
+        />
+
+
 
 </LinearLayout>

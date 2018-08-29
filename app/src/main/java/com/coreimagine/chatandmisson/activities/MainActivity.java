@@ -328,17 +328,8 @@ public class MainActivity extends AppCompatActivity
                     addMessage(requestBean);
                     break;
                 case 2:
-//                    TaskBean taskBean1 = new TaskBean();
-//                    JSONObject jsonObject = JSON.parseObject(intent.getStringExtra("data"));
-//                    taskBean1.setUserName(jsonObject.getString("userName"));
-//                    JSONArray jsonArray = JSON.parseArray(jsonObject.getString("per"));
-//                    String str = "";
-//                    for (Object o :
-//                            jsonArray) {
-//                        str = "\n"+o.toString();
-//                    }
-//                    taskBean1.setMsg(str);
-//                    addMessage(taskBean1);
+                    JSONObject jsonObject = JSON.parseObject(intent.getStringExtra("data"));
+                    addMessage(jsonObject);
                     break;
             }
 
@@ -367,7 +358,7 @@ public class MainActivity extends AppCompatActivity
                 mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_MYSELF)
                         .username(bean.getUserName()).message(bean.getMsg()).time(bean.getTime()).build());
             } else {
-                mMessages.add(new Message.Builder(Message.TYPE_MESSAGE_MYSELF)
+                mMessages.add(new Message.Builder(Message.TYPE_MESSAGE)
                         .username(bean.getUserName()).message(bean.getMsg()).time(bean.getTime()).build());
             }
         }else {
@@ -378,11 +369,24 @@ public class MainActivity extends AppCompatActivity
         scrollToBottom();
     }
 
+    private void  addMessage(JSONObject bean) {
+        String per = bean.getString("per");
+        per = per.replace(",","\n");
+        mMessages.add(new Message.Builder(Message.TYPE_ACTION)
+                .username("@"+bean.getString("userName")).message(per).time(bean.getString("time")).build());
+
+
+        adapter.notifyItemInserted(mMessages.size() - 1);
+        scrollToBottom();
+    }
+
     private void  addMessage(RequestBean requestBean) {
         TaskBean bean = requestBean.getTask();
+        String result;
+        if (requestBean.getResult() ==1) result = "已允许";
+        else result = "已拒绝";
         mMessages.add(new Message.Builder(Message.TYPE_ACTION)
-                .username(bean.getUserName()).message(bean.getMsg()).time(bean.getTime()).requestBean(requestBean).build());
-
+                .username("@"+bean.getUserName()).message(bean.getMsg()+"\n"+result+"\n审批人:"+requestBean.getAdminName()+"\n审批时间:"+requestBean.getTime()).time(bean.getTime()).requestBean(requestBean).build());
         adapter.notifyItemInserted(mMessages.size() - 1);
         scrollToBottom();
     }
@@ -416,80 +420,6 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
             });
-        }
-    };
-
-//    private Emitter.Listener onUserJoined = new Emitter.Listener() {
-//        @Override
-//        public void call(final Object... args) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    JSONObject data = JSON.parseObject( args[0].toString());
-//                    String username;
-//                    username = data.getString("user_name");
-//                    addLog(getResources().getString(R.string.message_user_joined, username));
-////                    addParticipantsLog(numUsers);
-//                }
-//            });
-//        }
-//    };
-
-//    private Emitter.Listener onUserLeft = new Emitter.Listener() {
-//        @Override
-//        public void call(final Object... args) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    JSONObject data = JSON.parseObject( args[0].toString());
-//                    String username;
-//                    username = data.getString("user_name");
-//                    addLog(getResources().getString(R.string.message_user_left, username));
-////                    addParticipantsLog(numUsers);
-////                    removeTyping(username);
-//                }
-//            });
-//        }
-//    };
-
-//    private Emitter.Listener onTyping = new Emitter.Listener() {
-//        @Override
-//        public void call(final Object... args) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    JSONObject data = JSON.parseObject( args[0].toString());
-//                    String username;
-//                    username = data.getString("username");
-//                    addTyping(username);
-//                }
-//            });
-//        }
-//    };
-//
-//    private Emitter.Listener onStopTyping = new Emitter.Listener() {
-//        @Override
-//        public void call(final Object... args) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    JSONObject data = JSON.parseObject( args[0].toString());
-//                    String username;
-//                    username = data.getString("username");
-//
-////                    removeTyping(username);
-//                }
-//            });
-//        }
-//    };
-
-    private Runnable onTypingTimeout = new Runnable() {
-        @Override
-        public void run() {
-            if (!mTyping) return;
-
-            mTyping = false;
-            mSocket.emit("stop typing");
         }
     };
 

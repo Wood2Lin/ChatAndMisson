@@ -92,7 +92,6 @@ public class TaskMessageUtils {
             jsonObject.put("time", simpleDateFormat.format(date));
             String timeStr = simpleDateFormat.format(date).trim().replace(" ","");
             jsonObject.put("taskID", System.currentTimeMillis());
-            Log.e( "performanceCommon: ", jsonObject.toString());
             App.getSocket().emit(event_name, jsonObject.toString());
     }
 
@@ -175,9 +174,10 @@ public class TaskMessageUtils {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("adminID",App.getUserInfo().getId());
         jsonObject.put("adminName",App.getUserInfo().getName());
-        jsonObject.put("task", JSON.toJSON(taskBean).toString());
+        jsonObject.put("task", taskBean);
         jsonObject.put("result", result);
+        jsonObject.put("groupName", App.groupName);
         jsonObject.put("time",simpleDateFormat.format(date));
-        App.getSocket().emit(App.groupName+"handleRequest", jsonObject.toString());
+        App.getSocket().emit("handleRequest", jsonObject.toString());
     }
 }
