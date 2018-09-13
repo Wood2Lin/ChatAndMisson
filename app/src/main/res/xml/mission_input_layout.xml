@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="24.9%p"
+    android:keyHeight="50px"
+    android:horizontalGap="2px"
+    android:verticalGap="2px" >
+    <Row>
+        <Key
+            android:codes="603B"
+            android:keyLabel="总" />
+        <Key
+            android:codes="79BB"
+            android:keyLabel="离开" />
+        <Key
+            android:codes="56DE"
+            android:keyLabel="回归" />
+        <Key
+            android:codes="6E05"
+            android:keyLabel="清除" />
+
+    </Row>
+    <Row>
+        <Key
+            android:codes="6302"
+            android:keyLabel="挂" />
+        <Key
+            android:codes="8D56"
+            android:keyLabel="赖" />
+        <Key
+            android:codes="49"
+            android:keyLabel="1" />
+        <Key
+            android:codes="50"
+            android:keyLabel="2" />
+        <Key
+            android:codes="51"
+            android:keyLabel="3" />
+    </Row>
+
+    <Row>
+        <Key
+            android:codes="4E0D"
+            android:keyLabel="不" />
+        <Key
+            android:codes="65E0"
+            android:keyLabel="无" />
+        <Key
+            android:codes="52"
+            android:keyLabel="4" />
+        <Key
+            android:codes="53"
+            android:keyLabel="5" />
+        <Key
+            android:codes="54"
+            android:keyLabel="6" />
+    </Row>
+    <Row>
+        <Key
+            android:codes="5173"
+            android:keyLabel="关" />
+        <Key
+            android:codes="62D2"
+            android:keyLabel="拒" />
+        <Key
+            android:codes="55"
+            android:keyLabel="7" />
+        <Key
+            android:codes="56"
+            android:keyLabel="8" />
+        <Key
+            android:codes="57"
+            android:keyLabel="9" />
+    </Row>
+    <Row>
+        <Key
+            android:codes="53D6"
+            android:keyLabel="取消" />
+        <Key
+            android:codes="67E5"
+            android:keyLabel="查" />
+        <Key
+            android:codes="58"
+            android:keyLabel="0" />
+        <Key
+            android:codes="2F"
+            android:keyLabel="/" />
+    </Row>
+</Keyboard>

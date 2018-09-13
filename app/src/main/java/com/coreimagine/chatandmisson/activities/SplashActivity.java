@@ -35,25 +35,25 @@ public class SplashActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (App.getUserInfo()==null){
-                    startActivity(new Intent(context,LoginActivity.class));
+//                if (App.getUserInfo()==null){
+                    startActivity(new Intent(context,WebActivity.class));
                     finish();
-                } else {
-                    HttpUtil.postEncrype(context, Urls.getAllGroups, null, new HttpCallBack() {
-                        @Override
-                        public void onSuccess(JSONObject result) {
-                            Log.e("onSuccess: ", result.toString());
-                            if (result.getBoolean("success")){
-                                JSONArray groupsArray = JSON.parseArray(result.getString("result"));
-                                String[] groups = new String[groupsArray.size()];
-                                for (int i = 0; i < groupsArray.size(); i++) {
-                                    groups[i] = groupsArray.getJSONObject(i).getString("group_name");
-                                }
-                                showGroupDialog(groups);
-                            }
-                        }
-                    });
-                }
+//                } else {
+//                    HttpUtil.postEncrype(context, Urls.getAllGroups, null, new HttpCallBack() {
+//                        @Override
+//                        public void onSuccess(JSONObject result) {
+//                            Log.e("onSuccess: ", result.toString());
+//                            if (result.getBoolean("success")){
+//                                JSONArray groupsArray = JSON.parseArray(result.getString("result"));
+//                                String[] groups = new String[groupsArray.size()];
+//                                for (int i = 0; i < groupsArray.size(); i++) {
+//                                    groups[i] = groupsArray.getJSONObject(i).getString("group_name");
+//                                }
+//                                showGroupDialog(groups);
+//                            }
+//                        }
+//                    });
+//                }
             }
         },1000);
 

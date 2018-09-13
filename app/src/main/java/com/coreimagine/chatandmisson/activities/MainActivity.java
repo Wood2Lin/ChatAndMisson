@@ -8,7 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,36 +24,32 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.coreimagine.chatandmisson.App;
 import com.coreimagine.chatandmisson.R;
 import com.coreimagine.chatandmisson.SocketService;
 import com.coreimagine.chatandmisson.adapters.MessageAdapter;
 import com.coreimagine.chatandmisson.beans.Message;
-import com.coreimagine.chatandmisson.beans.MessageBean;
 import com.coreimagine.chatandmisson.beans.RequestBean;
 import com.coreimagine.chatandmisson.beans.TaskBean;
 import com.coreimagine.chatandmisson.beans.UserInfo;
 import com.coreimagine.chatandmisson.utils.ServiceUtil;
 import com.coreimagine.chatandmisson.utils.TaskMessageUtils;
-import com.vondear.rxtool.RxTextTool;
-import com.vondear.rxtool.view.RxToast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.socket.client.Socket;
@@ -74,11 +70,15 @@ public class MainActivity extends AppCompatActivity
     private MessageReceiver messageReceiver;
     private InputMethodManager imm;
     private DrawerLayout drawer;
-    private LinearLayout linearLayout;
+    private LinearLayout linearLayout,itemLayout;
     private View popView;
+    private Handler handler = new Handler();
+    private HorizontalScrollView scrollView;
     private String msg_append="";
+    private int itemLayoutWidth,scrollWidth;
     private Button btn_zong,btn_leave,btn_back,btn_refuse,btn_hang_up,btn_lai,btn_none,btn_close,btn_cancel,btn_query,btn_no,
             btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9,btn0,btn_xie,btn_backspace;
+    private DateReceiver dateReceiver;
 //    private enum MESSAGE_TYPE{
 //        NORMAL,performanceOne,performanceTwo,performanceThree,applyLeave,applyBack,query,cancel,userExit
 //    }
@@ -96,13 +96,43 @@ public class MainActivity extends AppCompatActivity
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("MESSAGE_ACTION");   //为BroadcastReceiver指定action，使之用于接收同action的广播
         registerReceiver(messageReceiver,intentFilter);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        sdf.format(System.currentTimeMillis());
+        Log.e("onCreate: ", sdf.format(1535952729612L));
+    }
+
+    private Runnable ScrollRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int off = itemLayoutWidth - scrollWidth;
+            if (off > 0) {
+                scrollView.scrollBy(10, 0);
+                if (scrollView.getScrollX() == off) {
+                    scrollView.fullScroll(ScrollView.FOCUS_LEFT);
+                    handler.postDelayed(this, 500);
+                } else {
+                    handler.postDelayed(this, 100);
+                }
+            }
+        }
+    };
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        itemLayoutWidth = itemLayout.getMeasuredWidth();
+        scrollWidth = scrollView.getWidth();
+        handler.post(ScrollRunnable);
     }
 
     void initView(){
         userInfo = App.getUserInfo();
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(App.groupName);
         setSupportActionBar(toolbar);
+        TextView groupName = findViewById(R.id.group_text);
+        groupName.setText(App.groupName);
+
+        scrollView = findViewById(R.id.scrollView);
 
         popView = findViewById(R.id.key_layout);
         btn_zong = findViewById(R.id.btn_zong);
@@ -155,6 +185,9 @@ public class MainActivity extends AppCompatActivity
 
         drawer = findViewById(R.id.drawer_layout);
         linearLayout = findViewById(R.id.linearLayout);
+        itemLayout = findViewById(R.id.item_layout);
+
+        Log.e("initView: ", itemLayout.getMeasuredWidth()+"-----");
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
             @Override
@@ -209,8 +242,21 @@ public class MainActivity extends AppCompatActivity
                 attemptSend(1);
             }
         });
-    }
 
+        //注册广播
+        dateReceiver = new DateReceiver();
+        IntentFilter filter = new IntentFilter();
+//        filter.addAction(Intent.ACTION_DATE_CHANGED);
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        registerReceiver(dateReceiver, filter);
+    }
+    class DateReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("hdkjshkj",intent.toString());
+        }
+    }
     public void onMoreClicked(View view) {
         if (!popView.isShown())
             popView.setVisibility(View.VISIBLE);
@@ -495,6 +541,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(messageReceiver);
+        unregisterReceiver(dateReceiver);
 //        if (mSocket.connected())
 //            mSocket.disconnect();
 //        mSocket.disconnect();

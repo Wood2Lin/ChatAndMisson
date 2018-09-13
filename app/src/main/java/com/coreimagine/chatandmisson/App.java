@@ -31,12 +31,12 @@ public class App extends Application {
         x.Ext.setDebug(BuildConfig.DEBUG); // 是否输出debug日志, 开启debug会影响性能.
         RxTool.init(this);
         CrashReport.initCrashReport(getApplicationContext(), "08ec3a7647", false);
-        try {
-            mSocket = IO.socket("http://47.100.118.90:60207");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-        sharedPreferences = getSharedPreferences("USER_INFO",MODE_PRIVATE);
+//        try {
+//            mSocket = IO.socket("http://47.100.118.90:60207");
+//        } catch (URISyntaxException e) {
+//            throw new RuntimeException(e);
+//        }
+//        sharedPreferences = getSharedPreferences("USER_INFO",MODE_PRIVATE);
         initDb();
     }
     public static Socket getSocket() {
