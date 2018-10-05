@@ -50,8 +50,7 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".activities.WebActivity">
-        </activity>
+        <activity android:name=".activities.WebActivity"></activity>
     </application>
 
 </manifest>
