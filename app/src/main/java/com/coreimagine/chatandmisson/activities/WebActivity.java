@@ -26,8 +26,14 @@ public class WebActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
         initView();
-
     }
+
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) webView.goBack();
+        else finish();
+    }
+
     private void initView(){
         webView = findViewById(R.id.webView);
 //        KeyboardUtil.hideKeyboard(WebActivity.this, webView);
@@ -38,13 +44,14 @@ public class WebActivity extends AppCompatActivity{
         webView.getSettings().setLoadWithOverviewMode(false);
         // 开启web和js通信的通道。
         webView.getSettings().setJavaScriptEnabled(true);
-
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
+                if (!url.equals("javacript:void(0);")) //防止权日天那狗日的写的业余代码报错，加一个判断
+                    view.loadUrl(url);
                 return true;
             }
+
         });
 
         webView.setWebChromeClient(new WebChromeClient(){
@@ -61,6 +68,8 @@ public class WebActivity extends AppCompatActivity{
 //                mCustomKeyboard.showKeyboard();
 //            }
 //        });
+
+
 
     }
 
