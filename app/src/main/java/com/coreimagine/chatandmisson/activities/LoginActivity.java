@@ -77,6 +77,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = findViewById(R.id.username);
+
         login_card = findViewById(R.id.login_card);
         mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -403,4 +404,3 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
 //        }
 //    }
 }
-

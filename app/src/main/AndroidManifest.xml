@@ -50,7 +50,14 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".activities.WebActivity"></activity>
+        <activity android:name=".activities.WebActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

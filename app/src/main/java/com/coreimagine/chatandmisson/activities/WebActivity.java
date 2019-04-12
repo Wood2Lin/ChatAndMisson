@@ -57,7 +57,7 @@ public class WebActivity extends AppCompatActivity{
         webView.setWebChromeClient(new WebChromeClient(){
 
         });
-        webView.loadUrl("http://47.100.118.90:60200/CI_test/index.php/Webchat");
+        webView.loadUrl("http://47.105.163.185:60200/CI_test/");
 
 //        new Handler().post(new Runnable() {
 //            @Override
